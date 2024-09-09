@@ -3,10 +3,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
-# Create the directory for saving plots if it does not exist
-plot_dir = 'data/plots'
-os.makedirs(plot_dir, exist_ok=True)
-
 def save_plot(filename):
     """Helper function to save plots to the specified directory."""
     plt.savefig(os.path.join(plot_dir, filename))
@@ -63,13 +59,15 @@ def plot_countplot(data, target_column):
 
 def visualize_data(data, target_column):
     """Runs all visualization functions on the dataset."""
+
+    # Create the directory for saving plots if it does not exist
+    plot_dir = 'data/plots'
+    os.makedirs(plot_dir, exist_ok=True)
+
+    # Do the visualization
     summarize_data(data)
     plot_histograms(data)
     plot_pairplot(data, target_column)
     plot_correlation_heatmap(data)
     plot_boxplots(data, target_column)
     plot_countplot(data, target_column)
-
-# Example usage
-# Assuming 'heart_disease_data' is your DataFrame and 'target' is your target column
-visualize_data(heart_disease_data, 'target')  # Replace 'target' with the actual target column name
