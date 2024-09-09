@@ -11,7 +11,7 @@ def main():
     data = process_data('data/csv/heart_disease_uci.csv')
 
     # Visualize the Data (save into a folder called data/plots)
-    visualize_data(data, target_column)
+    visualize_data(data)
 
 if __name__ == "__main__":
     main()
