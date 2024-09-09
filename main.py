@@ -2,7 +2,7 @@ from src.download import download_and_extract_dataset
 
 def main():
 
-    # Download the Heart Disease Dataset from Kaggle (save to data/heart_disease.csv)
+    # Download the Heart Disease Dataset from Kaggle (save to data/csv/heart_disease_uci.csv)
     download_and_extract_dataset()
 
     # Gather our Data (import the csv)
