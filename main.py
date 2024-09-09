@@ -13,5 +13,11 @@ def main():
     # Visualize the Data (save into a folder called data/plots)
     visualize_data(data)
 
+    # Split your data
+
+    # Train a model
+
+    # Evaluate a model
+
 if __name__ == "__main__":
     main()
