@@ -1,5 +1,6 @@
 from src.download import download_and_extract_dataset
 from src.preprocessing import process_data
+from src.visualization import visualze_data
 def main():
 
     # Download the Heart Disease Dataset from Kaggle (save to data/csv/heart_disease_uci.csv)
