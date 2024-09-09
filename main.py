@@ -6,6 +6,7 @@ def main():
     download_and_extract_dataset()
 
     # Gather our Data (import the csv)
+    data = process_data('data/csv/heart_disease_uci.csv')
 
     # Visualize the Data (save into a folder called data/plots)
     
