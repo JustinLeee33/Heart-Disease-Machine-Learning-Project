@@ -58,11 +58,20 @@ def plot_pairplot(data):
     sns.pairplot(data)
     plt.suptitle('Pair Plot of Features', y=1.02)
     plt.show()
-
+    
 def plot_correlation_heatmap(data):
-    """Plots a heatmap of the correlation matrix."""
+    """Plots a heatmap of the correlation matrix for numeric columns only."""
+    # Filter out non-numeric columns
+    numeric_data = data.select_dtypes(include=['float64', 'int64'])
+
+    # Handle missing values by filling with the mean of each column (or any method of your choice)
+    numeric_data.fillna(numeric_data.mean(), inplace=True)
+
+    # Compute the correlation matrix
+    correlation_matrix = numeric_data.corr()
+
+    # Plot the heatmap
     plt.figure(figsize=(12, 8))
-    correlation_matrix = data.corr()
     sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
     plt.title('Correlation Heatmap')
     plt.show()
