@@ -2,11 +2,11 @@ from src.download import download_and_extract_dataset
 from src.preprocessing import process_data
 from src.visualization import visualize_data
 import os
-from src.logistic_regression import train_and_evaluate as lr_train_and_evaluate
-from src.decision_tree import train_and_evaluate as dt_train_and_evaluate
-from src.random_forest import train_and_evaluate as rf_train_and_evaluate
-from src.gradient_boosting import train_and_evaluate as gb_train_and_evaluate
-from src.svm import train_and_evaluate as svm_train_and_evaluate
+from src.logistic_regression import lr_train_and_evaluate
+from src.decision_tree import dt_train_and_evaluate
+from src.random_forest import rf_train_and_evaluate
+from src.gradient_boosting import gb_train_and_evaluate
+from src.svm import svm_train_and_evaluate
 
 def main():
     print('Here')
