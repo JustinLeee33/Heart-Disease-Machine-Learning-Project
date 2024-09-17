@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
-def save_plot(filename, plot_dir):
+def save_plot(filename, plot_dir='data/plots'):
     """Helper function to save plots to the specified directory."""
+    os.makedirs(plot_dir, exist_ok=True)  # Create the directory if it doesn't exist
     plt.savefig(os.path.join(plot_dir, filename))
     plt.close()
 
@@ -18,7 +19,7 @@ def summarize_data(data):
         print(f"Mean: {data[column].mean()}")
         print(f"Standard Deviation: {data[column].std()}")
 
-def plot_missing_values(data):
+def plot_missing_values(data, plot_dir='data/plots'):
     """Plots a bar chart showing missing values for each feature."""
     missing_values = data.isnull().sum()
     missing = missing_values[missing_values > 0]
@@ -29,63 +30,45 @@ def plot_missing_values(data):
         plt.title('Missing Values per Feature')
         plt.ylabel('Number of Missing Values')
         plt.tight_layout()
-        plt.show()
+        save_plot('missing_values.png', plot_dir)
 
-def plot_most_variable_columns(data):
+def plot_most_variable_columns(data, plot_dir='data/plots'):
     """Plots the most variable numerical columns based on standard deviation."""
-    # Filter only numeric columns
-    numeric_data = data.select_dtypes(include=['float64', 'int64'])
-    
-    # Compute standard deviation for numeric columns
-    std_devs = numeric_data.std().sort_values(ascending=False)
-    
-    if std_devs.empty:
-        print("No numerical columns with variance.")
-        return
-    
+    std_devs = data.std().sort_values(ascending=False)
     top_5_std = std_devs.head(5).index  # Top 5 most variable columns
     print(f"Most Variable Columns: {top_5_std.tolist()}")
     
-    # Plot histograms of the top 5 most variable columns
-    numeric_data[top_5_std].hist(figsize=(12, 8), bins=30, edgecolor='black')
+    data[top_5_std].hist(figsize=(12, 8), bins=30, edgecolor='black')
     plt.suptitle('Histograms of Most Variable Features')
     plt.tight_layout()
-    plt.show()
+    save_plot('most_variable_columns.png', plot_dir)
 
-
-def plot_pairplot(data):
+def plot_pairplot(data, plot_dir='data/plots'):
     """Plots a pairplot for visualizing relationships between features."""
     sns.pairplot(data)
     plt.suptitle('Pair Plot of Features', y=1.02)
-    plt.show()
-    
-def plot_correlation_heatmap(data):
-    """Plots a heatmap of the correlation matrix for numeric columns only."""
-    # Filter out non-numeric columns
-    numeric_data = data.select_dtypes(include=['float64', 'int64'])
+    save_plot('pairplot.png', plot_dir)
 
-    # Handle missing values by filling with the mean of each column (or any method of your choice)
-    numeric_data.fillna(numeric_data.mean(), inplace=True)
-
-    # Compute the correlation matrix
-    correlation_matrix = numeric_data.corr()
-
-    # Plot the heatmap
+def plot_correlation_heatmap(data, plot_dir='data/plots'):
+    """Plots a heatmap of the correlation matrix."""
     plt.figure(figsize=(12, 8))
+    correlation_matrix = data.select_dtypes(include=['float64', 'int64']).corr()
     sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
     plt.title('Correlation Heatmap')
-    plt.show()
+    save_plot('correlation_heatmap.png', plot_dir)
 
 def visualize_data(data):
-    """Runs all visualization functions on the dataset without specifying a target column."""
+    """Runs all visualization functions on the dataset and saves plots to data/plots."""
+    plot_dir = 'data/plots'
+    
     # Show missing values
-    plot_missing_values(data)
+    plot_missing_values(data, plot_dir)
     
     # Show the most variable columns
-    plot_most_variable_columns(data)
+    plot_most_variable_columns(data, plot_dir)
     
     # Show correlation heatmap
-    plot_correlation_heatmap(data)
+    plot_correlation_heatmap(data, plot_dir)
     
     # Show pairplot to visualize relationships
-    plot_pairplot(data)
+    plot_pairplot(data, plot_dir)
