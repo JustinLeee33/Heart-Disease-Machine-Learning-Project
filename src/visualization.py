@@ -33,14 +33,25 @@ def plot_missing_values(data):
 
 def plot_most_variable_columns(data):
     """Plots the most variable numerical columns based on standard deviation."""
-    std_devs = data.std().sort_values(ascending=False)
+    # Filter only numeric columns
+    numeric_data = data.select_dtypes(include=['float64', 'int64'])
+    
+    # Compute standard deviation for numeric columns
+    std_devs = numeric_data.std().sort_values(ascending=False)
+    
+    if std_devs.empty:
+        print("No numerical columns with variance.")
+        return
+    
     top_5_std = std_devs.head(5).index  # Top 5 most variable columns
     print(f"Most Variable Columns: {top_5_std.tolist()}")
     
-    data[top_5_std].hist(figsize=(12, 8), bins=30, edgecolor='black')
+    # Plot histograms of the top 5 most variable columns
+    numeric_data[top_5_std].hist(figsize=(12, 8), bins=30, edgecolor='black')
     plt.suptitle('Histograms of Most Variable Features')
     plt.tight_layout()
     plt.show()
+
 
 def plot_pairplot(data):
     """Plots a pairplot for visualizing relationships between features."""
