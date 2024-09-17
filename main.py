@@ -1,15 +1,17 @@
+from src.preprocessing import process_data, convert_categorical_to_int
 from src.download import download_and_extract_dataset
-from src.preprocessing import process_data
 from src.visualization import visualize_data
-import os
 from src.logistic_regression import lr_train_and_evaluate
 from src.decision_tree import dt_train_and_evaluate
 from src.random_forest import rf_train_and_evaluate
 from src.gradient_boosting import gb_train_and_evaluate
 from src.svm import svm_train_and_evaluate
 
+from sklearn.model_selection import train_test_split
+
+import os
+
 def main():
-    print('Here')
     # Download the Heart Disease Dataset from Kaggle (save to data/csv/heart_disease_uci.csv)
     download_and_extract_dataset()
 
@@ -18,13 +20,13 @@ def main():
 
     # Visualize the Data (save into a folder called data/plots)
     visualize_data(data)
-
-    # Split the data into features and target variable
-    from sklearn.model_selection import train_test_split
+    
+    # Here is where we'll put that change for strings to ints for categories
+    converted_data, category_mappings = convert_categorical_to_int(data)
     
     # Assuming the target column is named 'target'
-    X = data.drop(columns=['target'])
-    y = data['target']
+    X = converted_data.drop(columns=['num'])
+    y = converted_data['num']
     
     # Split data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
