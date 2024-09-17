@@ -4,6 +4,7 @@ import os
 import shutil
 
 def download_and_extract_dataset():
+    print('Downloading the data')
     # Define the dataset file and directory
     dataset_file = 'heart-disease-data.zip'
     dataset_dir = 'heart-disease-data'
