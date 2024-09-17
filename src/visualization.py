@@ -34,11 +34,15 @@ def plot_missing_values(data, plot_dir='data/plots'):
 
 def plot_most_variable_columns(data, plot_dir='data/plots'):
     """Plots the most variable numerical columns based on standard deviation."""
-    std_devs = data.std().sort_values(ascending=False)
+    # Select only numeric columns
+    numeric_data = data.select_dtypes(include=['float64', 'int64'])
+    
+    # Compute standard deviation for numeric columns
+    std_devs = numeric_data.std().sort_values(ascending=False)
     top_5_std = std_devs.head(5).index  # Top 5 most variable columns
     print(f"Most Variable Columns: {top_5_std.tolist()}")
     
-    data[top_5_std].hist(figsize=(12, 8), bins=30, edgecolor='black')
+    numeric_data[top_5_std].hist(figsize=(12, 8), bins=30, edgecolor='black')
     plt.suptitle('Histograms of Most Variable Features')
     plt.tight_layout()
     save_plot('most_variable_columns.png', plot_dir)
@@ -51,8 +55,11 @@ def plot_pairplot(data, plot_dir='data/plots'):
 
 def plot_correlation_heatmap(data, plot_dir='data/plots'):
     """Plots a heatmap of the correlation matrix."""
+    # Select only numeric columns for the correlation matrix
+    numeric_data = data.select_dtypes(include=['float64', 'int64'])
+    
     plt.figure(figsize=(12, 8))
-    correlation_matrix = data.select_dtypes(include=['float64', 'int64']).corr()
+    correlation_matrix = numeric_data.corr()
     sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt='.2f', linewidths=0.5)
     plt.title('Correlation Heatmap')
     save_plot('correlation_heatmap.png', plot_dir)
