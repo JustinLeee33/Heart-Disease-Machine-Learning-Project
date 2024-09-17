@@ -9,6 +9,7 @@ from src.gradient_boosting import train_and_evaluate as gb_train_and_evaluate
 from src.svm import train_and_evaluate as svm_train_and_evaluate
 
 def main():
+    print('Here')
     # Download the Heart Disease Dataset from Kaggle (save to data/csv/heart_disease_uci.csv)
     download_and_extract_dataset()
 
