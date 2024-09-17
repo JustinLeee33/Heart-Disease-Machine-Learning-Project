@@ -38,3 +38,13 @@ def process_data(file_path):
     
     return data
 
+def convert_categorical_to_int(df):
+    mappings = {}  # Dictionary to store mappings of categories to ints
+    
+    # Iterate through columns and convert categorical columns to integers
+    for col in df.columns:
+        if df[col].dtype == 'object':  # Check if the column contains strings (categorical data)
+            df[col], mapping = pd.Series(df[col]).factorize()  # Use pandas' factorize method
+            mappings[col] = dict(enumerate(mapping))  # Store mapping of int -> category
+            
+    return df, mappings
