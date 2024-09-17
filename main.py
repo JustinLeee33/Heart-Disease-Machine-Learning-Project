@@ -23,6 +23,10 @@ def main():
     
     # Here is where we'll put that change for strings to ints for categories
     converted_data, category_mappings = convert_categorical_to_int(data)
+
+    print(category_mappings)
+
+    return
     
     # Assuming the target column is named 'target'
     X = converted_data.drop(columns=['num'])
