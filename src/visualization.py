@@ -69,9 +69,3 @@ def visualize_data(data):
     
     # Show pairplot to visualize relationships
     plot_pairplot(data)
-
-# Example usage
-file_path = 'data/csv/heart_disease_uci.csv'
-data = pd.read_csv(file_path)
-
-visualize_data(data)
