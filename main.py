@@ -21,21 +21,23 @@ def main():
     # Visualize the Data (save into a folder called data/plots)
     visualize_data(data)
     
-    # Here is where we'll put that change for strings to ints for categories
+    # Convert categorical data to integers
     converted_data, category_mappings = convert_categorical_to_int(data)
 
-    print(category_mappings)
-
-    return
+    # Print category mappings
+    print("Category Mappings:\n", category_mappings)
     
-    # Assuming the target column is named 'target'
-    X = converted_data.drop(columns=['num'])
-    y = converted_data['num']
+    # Drop the 'num' column (ground truth) for feature data (X)
+    if 'num' in converted_data.columns:
+        X = converted_data.drop(columns=['num'])
+        y = converted_data['num']
+    else:
+        raise KeyError("The 'num' column (ground truth) is missing from the dataset.")
     
     # Split data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
-    # Create data/plots directory if it doesn't exist
+    # Ensure the data/plots directory exists
     os.makedirs('data/plots', exist_ok=True)
     
     # Train and evaluate models
