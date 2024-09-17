@@ -3,7 +3,7 @@ from sklearn.metrics import accuracy_score, classification_report
 import matplotlib.pyplot as plt
 import os
 
-def train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
+def rf_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
     """Train and evaluate Random Forest model."""
     model = RandomForestClassifier()
     model.fit(X_train, y_train)
