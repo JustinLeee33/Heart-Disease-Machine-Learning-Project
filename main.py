@@ -17,7 +17,12 @@ def plot_precision_recall(models, X_test, y_test):
     for model_name, model in models.items():
         if model is not None:
             try:
-                y_scores = model.predict_proba(X_test)
+                if hasattr(model, 'predict_proba'):
+                    y_scores = model.predict_proba(X_test)
+                else:
+                    # Use decision_function for SVM if predict_proba is not available
+                    y_scores = model.decision_function(X_test)
+                
                 for class_index in range(y_scores.shape[1]):
                     precision, recall, _ = precision_recall_curve(y_test == class_index, y_scores[:, class_index])
                     plt.plot(recall, precision, label=f'{model_name} - Class {class_index}')
