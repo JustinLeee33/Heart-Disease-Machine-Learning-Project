@@ -1,4 +1,3 @@
-
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report
 import matplotlib.pyplot as plt
@@ -32,3 +31,5 @@ def lr_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots
     plt.tight_layout()
     plt.savefig(os.path.join(plot_dir, 'logistic_regression_accuracy.png'))
     plt.close()
+    
+    return model  # Return the trained model
