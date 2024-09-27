@@ -16,17 +16,23 @@ def plot_precision_recall(models, X_test, y_test):
     plt.figure(figsize=(10, 8))
     for model_name, model in models.items():
         if model is not None:
-            y_scores = model.predict_proba(X_test)
-            for class_index in range(y_scores.shape[1]):
-                precision, recall, _ = precision_recall_curve(y_test == class_index, y_scores[:, class_index])
-                plt.plot(recall, precision, label=f'{model_name} - Class {class_index}')
+            try:
+                y_scores = model.predict_proba(X_test)
+                for class_index in range(y_scores.shape[1]):
+                    precision, recall, _ = precision_recall_curve(y_test == class_index, y_scores[:, class_index])
+                    plt.plot(recall, precision, label=f'{model_name} - Class {class_index}')
+            except Exception as e:
+                print(f"Error while processing model {model_name}: {e}")
+
     plt.xlabel('Recall')
     plt.ylabel('Precision')
     plt.title('Precision vs Recall for Multiple Models')
     plt.legend()
     plt.grid()
     plt.savefig('data/plots/precision_recall_plot.png')
-    plt.close()
+    plt.show()  # Display the plot
+    plt.close()  # Close the plot to free memory
+
 
 def main():
     download_and_extract_dataset()
