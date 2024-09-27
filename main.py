@@ -1,36 +1,52 @@
-import matplotlib.pyplot as plt
-from sklearn.metrics import precision_recall_curve
+from src.preprocessing import process_data, convert_categorical_to_int
+from src.download import download_and_extract_dataset
+from src.visualization import visualize_data
+from src.logistic_regression import lr_train_and_evaluate
+from src.decision_tree import dt_train_and_evaluate
+from src.random_forest import rf_train_and_evaluate
+from src.gradient_boosting import gb_train_and_evaluate
+from src.svm import svm_train_and_evaluate
 
-def plot_precision_recall(models, X_test, y_test):
-    plt.figure(figsize=(12, 8))  # Increased size for better clarity
-    colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'orange', 'purple']  # Color list for variety
-    color_idx = 0
+from sklearn.model_selection import train_test_split
 
-    for model_name, model in models.items():
-        if model is not None:
-            try:
-                if hasattr(model, 'predict_proba'):
-                    y_scores = model.predict_proba(X_test)
-                else:
-                    # Use decision_function for SVM if predict_proba is not available
-                    y_scores = model.decision_function(X_test)
-                    y_scores = (y_scores - y_scores.min()) / (y_scores.max() - y_scores.min())  # Normalize
+import os
 
-                for class_index in range(y_scores.shape[1]):
-                    precision, recall, _ = precision_recall_curve(y_test == class_index, y_scores[:, class_index])
-                    plt.plot(recall, precision, color=colors[color_idx % len(colors)], 
-                             label=f'{model_name} - Class {class_index}')
-                    color_idx += 1
-            except Exception as e:
-                print(f"Error while processing model {model_name}: {e}")
+def main():
+    # Download the Heart Disease Dataset from Kaggle (save to data/csv/heart_disease_uci.csv)
+    download_and_extract_dataset()
 
-    plt.xlabel('Recall', fontsize=14)
-    plt.ylabel('Precision', fontsize=14)
-    plt.title('Precision vs Recall for Multiple Models', fontsize=16)
-    plt.legend(loc='best')
-    plt.grid(True)
-    plt.tight_layout()  # Ensures that everything fits in the figure area
-    plt.savefig('data/plots/precision_recall_plot.png')
-    plt.show()  # Display the plot
-    plt.close()  # Close the plot to free memory
+    # Gather our Data (import the csv)
+    data = process_data('data/csv/heart_disease_uci.csv')
+
+    # Visualize the Data (save into a folder called data/plots)
+    visualize_data(data)
+    
+    # Convert categorical data to integers
+    converted_data, category_mappings = convert_categorical_to_int(data)
+
+    # Print category mappings
+    print("Category Mappings:\n", category_mappings)
+    
+    # Drop the 'num' column (ground truth) for feature data (X)
+    if 'num' in converted_data.columns:
+        X = converted_data.drop(columns=['num'])
+        y = converted_data['num']
+    else:
+        raise KeyError("The 'num' column (ground truth) is missing from the dataset.")
+    
+    # Split data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    # Ensure the data/plots directory exists
+    os.makedirs('data/plots', exist_ok=True)
+    
+    # Train and evaluate models
+    lr_train_and_evaluate(X_train, X_test, y_train, y_test)
+    dt_train_and_evaluate(X_train, X_test, y_train, y_test)
+    rf_train_and_evaluate(X_train, X_test, y_train, y_test)
+    gb_train_and_evaluate(X_train, X_test, y_train, y_test)
+    svm_train_and_evaluate(X_train, X_test, y_train, y_test)
+
+if __name__ == "__main__":
+    main()
 
