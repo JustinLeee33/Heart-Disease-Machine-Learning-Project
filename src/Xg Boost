@@ -1,32 +1,35 @@
-import xgboost as xgb
-from sklearn.metrics import accuracy_score, classification_report
-import matplotlib.pyplot as plt
-import os
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import GridSearchCV
 
-def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
-    """Train and evaluate XGBoost model."""
-    model = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42)
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
+def rf_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
+    """Train and evaluate Random Forest model with hyperparameter tuning."""
+    # Set up the parameter grid
+    param_grid = {
+        'n_estimators': [50, 100, 200],
+        'max_depth': [None, 10, 20, 30],
+        'min_samples_split': [2, 5, 10],
+        'min_samples_leaf': [1, 2, 4],
+        'bootstrap': [True, False]
+    }
     
-    # Evaluation
+    # Create the model
+    rf = RandomForestClassifier()
+    
+    # Set up GridSearchCV
+    grid_search = GridSearchCV(estimator=rf, param_grid=param_grid, cv=3, n_jobs=-1, verbose=2)
+    grid_search.fit(X_train, y_train)
+
+    # Best model
+    best_rf = grid_search.best_estimator_
+    
+    # Evaluate
+    y_pred = best_rf.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
     report = classification_report(y_test, y_pred)
     
-    print(f"XGBoost Accuracy: {accuracy:.4f}")
+    print(f"Random Forest Best Parameters: {grid_search.best_params_}")
+    print(f"Random Forest Accuracy: {accuracy:.4f}")
     print("Classification Report:")
     print(report)
     
-    with open(os.path.join(plot_dir, 'xgboost_report.txt'), 'w') as f:
-        f.write(report)
-        
-    plt.figure(figsize=(6, 4))
-    plt.bar(['XGBoost'], [accuracy])
-    plt.ylim(0, 1)
-    plt.title('Model Accuracy')
-    plt.ylabel('Accuracy')
-    plt.tight_layout()
-    plt.savefig(os.path.join(plot_dir, 'xgboost_accuracy.png'))
-    plt.close()
-
-    return model  # Return the trained model
+    # Additional code to save results and plot...
