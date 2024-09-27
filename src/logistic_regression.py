@@ -1,3 +1,7 @@
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.metrics import accuracy_score, classification_report
+import matplotlib.pyplot as plt
+import os
 def lr_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
     """Train and evaluate Logistic Regression model."""
     model = LogisticRegression(max_iter=1000)
