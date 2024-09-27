@@ -1,0 +1,32 @@
+import xgboost as xgb
+from sklearn.metrics import accuracy_score, classification_report
+import matplotlib.pyplot as plt
+import os
+
+def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
+    """Train and evaluate XGBoost model."""
+    model = xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42)
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    
+    # Evaluation
+    accuracy = accuracy_score(y_test, y_pred)
+    report = classification_report(y_test, y_pred)
+    
+    print(f"XGBoost Accuracy: {accuracy:.4f}")
+    print("Classification Report:")
+    print(report)
+    
+    with open(os.path.join(plot_dir, 'xgboost_report.txt'), 'w') as f:
+        f.write(report)
+        
+    plt.figure(figsize=(6, 4))
+    plt.bar(['XGBoost'], [accuracy])
+    plt.ylim(0, 1)
+    plt.title('Model Accuracy')
+    plt.ylabel('Accuracy')
+    plt.tight_layout()
+    plt.savefig(os.path.join(plot_dir, 'xgboost_accuracy.png'))
+    plt.close()
+
+    return model  # Return the trained model
