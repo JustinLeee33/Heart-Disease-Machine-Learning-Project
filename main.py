@@ -1,3 +1,14 @@
+from src.preprocessing import process_data, convert_categorical_to_int
+from src.download import download_and_extract_dataset
+from src.visualization import visualize_data
+from src.logistic_regression import lr_train_and_evaluate
+from src.decision_tree import dt_train_and_evaluate
+from src.random_forest import rf_train_and_evaluate
+from src.gradient_boosting import gb_train_and_evaluate
+from src.svm import svm_train_and_evaluate
+from sklearn.model_selection import train_test_split
+import os
+
 def main():
     # Download the Heart Disease Dataset from Kaggle
     download_and_extract_dataset()
