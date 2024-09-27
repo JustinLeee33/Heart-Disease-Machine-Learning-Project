@@ -1,6 +1,6 @@
 from sklearn.metrics import precision_recall_curve, average_precision_score
 import matplotlib.pyplot as plt
-import numpy as np
+import os
 
 def plot_precision_recall_curve(y_test, y_probs, model_name):
     precision, recall, _ = precision_recall_curve(y_test, y_probs)
@@ -27,6 +27,9 @@ def main():
     y = converted_data['num']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
+    # Ensure plots directory exists
+    os.makedirs('data/plots', exist_ok=True)
+
     # Train and evaluate models
     models = [
         ('Logistic Regression', lr_train_and_evaluate(X_train, X_test, y_train, y_test)),
