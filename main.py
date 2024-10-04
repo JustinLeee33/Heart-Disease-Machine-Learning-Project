@@ -10,9 +10,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_recall_curve
 import os
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, precision_score, recall_score
 
 def plot_precision_recall_curves(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
-    """Plots Precision vs Recall for all models."""
+    """Plots Precision vs Recall for all models and computes precision and recall from confusion matrix."""
     models = {
         'Logistic Regression': lr_train_and_evaluate,
         'Decision Tree': dt_train_and_evaluate,
@@ -24,15 +25,28 @@ def plot_precision_recall_curves(X_train, X_test, y_train, y_test, plot_dir='dat
     plt.figure(figsize=(10, 6))
     
     for model_name, model_func in models.items():
-        # Fit the model and get predictions
-        model = model_func(X_train, X_test, y_train, y_test, plot_dir)
+        # Train the model and get predictions
+        model, y_pred = model_func(X_train, X_test, y_train, y_test, plot_dir)
         
-        # Calculate precision and recall
-        y_scores = model.predict_proba(X_test)[:, 1]  # Get probability estimates for positive class
-        precision, recall, _ = precision_recall_curve(y_test, y_scores)
+        # Calculate confusion matrix
+        cm = confusion_matrix(y_test, y_pred)
+        tn, fp, fn, tp = cm.ravel()  # Unpack confusion matrix
+        
+        # Calculate precision and recall from the confusion matrix
+        precision = tp / (tp + fp) if (tp + fp) != 0 else 0
+        recall = tp / (tp + fn) if (tp + fn) != 0 else 0
+        
+        # Print confusion matrix, precision, and recall
+        print(f"{model_name} Confusion Matrix:\n{cm}")
+        print(f"{model_name} Precision: {precision:.2f}")
+        print(f"{model_name} Recall: {recall:.2f}")
+        
+        # Calculate precision and recall curve
+        y_scores = model.predict_proba(X_test)[:, 1]  # Probability estimates for positive class
+        precision_curve, recall_curve, _ = precision_recall_curve(y_test, y_scores)
         
         # Plot Precision vs Recall curve
-        plt.plot(recall, precision, label=model_name)
+        plt.plot(recall_curve, precision_curve, label=model_name)
     
     plt.title('Precision vs Recall for Different Models')
     plt.xlabel('Recall')
