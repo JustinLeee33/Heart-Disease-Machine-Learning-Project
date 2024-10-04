@@ -1,5 +1,5 @@
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, precision_score, recall_score
 import matplotlib.pyplot as plt
 import os
 
@@ -19,19 +19,18 @@ def lr_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots
     
     # Calculate confusion matrix
     cm = confusion_matrix(y_test, y_pred)
-    tn, fp, fn, tp = cm.ravel()
     
-    # Calculate precision and recall from confusion matrix
-    precision = tp / (tp + fp) if (tp + fp) != 0 else 0
-    recall = tp / (tp + fn) if (tp + fn) != 0 else 0
+    # Calculate precision and recall for both binary and multiclass cases
+    precision = precision_score(y_test, y_pred, average='weighted')  # Use 'weighted' for multiclass
+    recall = recall_score(y_test, y_pred, average='weighted')        # Use 'weighted' for multiclass
     
     # Print results
     print(f"Logistic Regression Accuracy: {accuracy:.4f}")
     print("Classification Report:")
     print(report)
     print(f"Confusion Matrix:\n{cm}")
-    print(f"Precision: {precision:.4f}")
-    print(f"Recall: {recall:.4f}")
+    print(f"Weighted Precision: {precision:.4f}")
+    print(f"Weighted Recall: {recall:.4f}")
     
     # Save classification report
     with open(os.path.join(plot_dir, 'logistic_regression_report.txt'), 'w') as f:
