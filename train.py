@@ -9,6 +9,7 @@ from src.random_forest import rf_train_and_evaluate
 from src.gradient_boosting import gb_train_and_evaluate
 from src.svm import svm_train_and_evaluate
 from src.xgboost_model import xgb_train_and_evaluate  # Renamed module for clarity
+from src.ensemble_learning import ensemble_train_and_evaluate
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_recall_curve
@@ -67,6 +68,7 @@ def main():
         'Gradient Boosting': gb_train_and_evaluate,
         'SVM': svm_train_and_evaluate,
         'XGBoost': xgb_train_and_evaluate
+        'Ensemble Learning': ensemble_train_and_evaluate,
     }
 
     # Store scores for plotting
