@@ -67,7 +67,7 @@ def main():
         'Random Forest': rf_train_and_evaluate,
         'Gradient Boosting': gb_train_and_evaluate,
         'SVM': svm_train_and_evaluate,
-        'XGBoost': xgb_train_and_evaluate
+        'XGBoost': xgb_train_and_evaluate, 
         'Ensemble Learning': ensemble_train_and_evaluate,
     }
 
