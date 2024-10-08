@@ -5,7 +5,7 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 import matplotlib.pyplot as plt
 import os
 
-def rf_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
+def rf_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots', n_classes=5):
     """Train and evaluate Random Forest model."""
     model = RandomForestClassifier(random_state=42)
     
@@ -15,8 +15,8 @@ def rf_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots
     # Predict labels
     y_pred = model.predict(X_test)
     
-    # Get predicted probabilities for Precision-Recall curve
-    y_scores = model.predict_proba(X_test)[:, 1]  # Use probabilities for the positive class
+    # Get predicted probabilities for all classes (multiclass)
+    y_scores = model.predict_proba(X_test)  # Probabilities for each class (shape: [n_samples, n_classes])
     
     # Evaluation Metrics
     accuracy = accuracy_score(y_test, y_pred)
@@ -25,9 +25,9 @@ def rf_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots
     # Calculate confusion matrix
     cm = confusion_matrix(y_test, y_pred)
     
-    # Calculate precision and recall for both binary and multiclass cases
-    precision = precision_score(y_test, y_pred, average='weighted')  # Use 'weighted' for multiclass
-    recall = recall_score(y_test, y_pred, average='weighted')        # Use 'weighted' for multiclass
+    # Calculate precision and recall (weighted average for multiclass)
+    precision = precision_score(y_test, y_pred, average='weighted')
+    recall = recall_score(y_test, y_pred, average='weighted')
     
     # Print results
     print(f"Random Forest Accuracy: {accuracy:.4f}")
