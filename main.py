@@ -6,6 +6,8 @@ from src.decision_tree import dt_train_and_evaluate
 from src.random_forest import rf_train_and_evaluate
 from src.gradient_boosting import gb_train_and_evaluate
 from src.svm import svm_train_and_evaluate
+from src.XG_Boost import xgb_train_and_evaluate
+
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_recall_curve
 import os
