@@ -1,14 +1,20 @@
-
 from sklearn.metrics import accuracy_score, classification_report
 import os
+from sklearn.preprocessing import label_binarize
 
-def automl_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
-    """Train and evaluate an AutoML (TPOT) model."""
+def automl_train_and_evaluate(X_train, X_test, y_train, y_test, n_classes, plot_dir='data/plots'):
+    """Train and evaluate an AutoML (TPOT) model with multiclass support."""
     model = TPOTClassifier(generations=5, population_size=50, verbosity=2, random_state=42)
+    
+    # Train the model
     model.fit(X_train, y_train)
+    
+    # Predict labels
     y_pred = model.predict(X_test)
-    y_scores = model.predict_proba(X_test)[:, 1]  # Probability estimates
-
+    
+    # Get predicted probabilities for each class
+    y_scores = model.predict_proba(X_test)  # y_scores will have shape (n_samples, n_classes)
+    
     # Evaluation
     accuracy = accuracy_score(y_test, y_pred)
     report = classification_report(y_test, y_pred)
@@ -16,5 +22,8 @@ def automl_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/p
     print("Classification Report:")
     print(report)
 
-    # Return model, predictions, and scores
+    # Ensure the plot directory exists
+    os.makedirs(plot_dir, exist_ok=True)
+
+    # Return the fitted pipeline, predictions, and predicted probabilities
     return model.fitted_pipeline_, y_pred, y_scores
