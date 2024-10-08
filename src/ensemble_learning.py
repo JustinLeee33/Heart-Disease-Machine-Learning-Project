@@ -1,25 +1,25 @@
-from sklearn.ensemble import VotingClassifier, BaggingClassifier
+from sklearn.ensemble import VotingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report
+import os
 
 def ensemble_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
-    """Train and evaluate an Ensemble model (VotingClassifier with Logistic, RF, SVM)."""
-    
-    from sklearn.linear_model import LogisticRegression
-    from sklearn.ensemble import RandomForestClassifier
-    from sklearn.svm import SVC
+    """Train and evaluate an Ensemble (Voting) model."""
     
     # Define base models
     lr = LogisticRegression(max_iter=1000)
     rf = RandomForestClassifier(n_estimators=100)
     svm = SVC(probability=True)
     
-    # Ensemble VotingClassifier (can also do stacking)
-    ensemble_model = VotingClassifier(estimators=[
-        ('lr', lr), ('rf', rf), ('svm', svm)], voting='soft')
+    # VotingClassifier (Ensemble)
+    model = VotingClassifier(estimators=[('lr', lr), ('rf', rf), ('svm', svm)], voting='soft')
+    model.fit(X_train, y_train)
     
-    ensemble_model.fit(X_train, y_train)
-    y_pred = ensemble_model.predict(X_test)
-    y_scores = ensemble_model.predict_proba(X_test)[:, 1]
+    # Predictions
+    y_pred = model.predict(X_test)
+    y_scores = model.predict_proba(X_test)[:, 1]
     
     # Evaluation
     accuracy = accuracy_score(y_test, y_pred)
@@ -29,4 +29,5 @@ def ensemble_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data
     print("Classification Report:")
     print(report)
     
-    return ensemble_model, y_pred, y_scores
+    # Return model, predictions, and scores
+    return model, y_pred, y_scores
