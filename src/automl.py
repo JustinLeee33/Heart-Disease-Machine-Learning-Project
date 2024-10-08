@@ -1,6 +1,6 @@
 from sklearn.metrics import accuracy_score, classification_report
-import os
 from sklearn.preprocessing import label_binarize
+import os
 
 def automl_train_and_evaluate(X_train, X_test, y_train, y_test, n_classes, plot_dir='data/plots'):
     """Train and evaluate an AutoML (TPOT) model with multiclass support."""
