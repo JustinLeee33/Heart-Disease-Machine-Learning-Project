@@ -4,9 +4,14 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, precision_score, recall_score
 import matplotlib.pyplot as plt
 import os
+from sklearn.preprocessing import label_binarize
 
 def dt_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
     """Train and evaluate Decision Tree model."""
+    # Determine number of classes
+    n_classes = len(set(y_train))  # Number of unique classes in y_train
+
+    # Initialize the model
     model = DecisionTreeClassifier(random_state=42)
     
     # Train the model
@@ -15,12 +20,13 @@ def dt_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots
     # Predict labels
     y_pred = model.predict(X_test)
     
-    # Get predicted probabilities for Precision-Recall curve
+    # Get predicted probabilities for all classes
     if hasattr(model, "predict_proba"):  # Check if the model supports predict_proba
-        y_scores = model.predict_proba(X_test)[:, 1]  # Use probabilities for the positive class
+        y_scores = model.predict_proba(X_test)  # Get probabilities for all classes
     else:
-        y_scores = y_pred  # In cases where predict_proba is not available, fall back to predictions
-    
+        # If the model doesn't support predict_proba, binarize the predictions for evaluation
+        y_scores = label_binarize(y_pred, classes=range(n_classes))
+
     # Evaluation Metrics
     accuracy = accuracy_score(y_test, y_pred)
     report = classification_report(y_test, y_pred)
@@ -28,7 +34,7 @@ def dt_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots
     # Calculate confusion matrix
     cm = confusion_matrix(y_test, y_pred)
     
-    # Calculate precision and recall for both binary and multiclass cases
+    # Calculate precision and recall (weighted for multiclass cases)
     precision = precision_score(y_test, y_pred, average='weighted')  # Use 'weighted' for multiclass
     recall = recall_score(y_test, y_pred, average='weighted')        # Use 'weighted' for multiclass
     
