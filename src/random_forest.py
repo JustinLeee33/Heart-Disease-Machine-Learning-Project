@@ -1,3 +1,5 @@
+# random_forest.py
+
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, precision_score, recall_score
 import matplotlib.pyplot as plt
@@ -12,6 +14,9 @@ def rf_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots
     
     # Predict labels
     y_pred = model.predict(X_test)
+    
+    # Get predicted probabilities for Precision-Recall curve
+    y_scores = model.predict_proba(X_test)[:, 1]  # Use probabilities for the positive class
     
     # Evaluation Metrics
     accuracy = accuracy_score(y_test, y_pred)
@@ -46,5 +51,5 @@ def rf_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots
     plt.savefig(os.path.join(plot_dir, 'random_forest_accuracy.png'))
     plt.close()
 
-    # Return the model and predictions to use for plotting or further evaluation
-    return model, y_pred
+    # Return the model, predictions, and predicted probabilities (y_scores)
+    return model, y_pred, y_scores
