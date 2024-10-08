@@ -78,7 +78,7 @@ def main():
         'Gradient Boosting': gb_train_and_evaluate,
         'SVM': svm_train_and_evaluate,
         'XGBoost': xgb_train_and_evaluate, 
-        'Ensemble Learning': ensemble_train_and_evaluate,
+        'AutoML (TPOT)': automl_train_and_evaluate,
     }
 
     # Store scores for plotting
