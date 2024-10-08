@@ -1,3 +1,5 @@
+# svm.py
+
 from sklearn.svm import SVC
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, precision_score, recall_score
 import matplotlib.pyplot as plt
@@ -5,9 +7,17 @@ import os
 
 def svm_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
     """Train and evaluate Support Vector Machine model."""
-    model = SVC(probability=True, random_state=42)  # Enable probability estimates
+    # Enable probability estimates by setting `probability=True`
+    model = SVC(probability=True, random_state=42)
+    
+    # Train the model
     model.fit(X_train, y_train)
+    
+    # Predict labels
     y_pred = model.predict(X_test)
+    
+    # Get predicted probabilities for Precision-Recall curve
+    y_scores = model.predict_proba(X_test)[:, 1]  # Probability estimates for the positive class
     
     # Evaluation Metrics
     accuracy = accuracy_score(y_test, y_pred)
@@ -42,5 +52,5 @@ def svm_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     plt.savefig(os.path.join(plot_dir, 'svm_accuracy.png'))
     plt.close()
 
-    # Return the model and predictions to use for plotting or further evaluation
-    return model, y_pred
+    # Return the model, predictions, and predicted probabilities (y_scores)
+    return model, y_pred, y_scores
