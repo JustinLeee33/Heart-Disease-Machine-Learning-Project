@@ -89,6 +89,7 @@ def main():
     os.makedirs('data/plots', exist_ok=True)
     
     # Train and evaluate models
+    xgb_train_and_evaluate(X_train, X_test, y_train, y_test)
     lr_train_and_evaluate(X_train, X_test, y_train, y_test)
     dt_train_and_evaluate(X_train, X_test, y_train, y_test)
     rf_train_and_evaluate(X_train, X_test, y_train, y_test)
