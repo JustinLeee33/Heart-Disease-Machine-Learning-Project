@@ -26,5 +26,8 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     print("Classification Report:")
     print(report)
 
+    # Ensure the plot directory exists
+    os.makedirs(plot_dir, exist_ok=True)
+
     # Return the trained model, predicted labels, and predicted probabilities for each class
     return model, y_pred, y_scores
