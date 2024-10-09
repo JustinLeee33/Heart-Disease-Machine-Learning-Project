@@ -5,7 +5,9 @@ import os
 
 def automl_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
     """Train and evaluate an AutoML (TPOT) model with multiclass support."""
-    model = TPOTClassifier(max_iter=1000, multi_class='ovr')
+    model = TPOTClassifier(generations=5, population_size=50, verbosity=2, random_state=42)
+    
+    # Train the model
     model.fit(X_train, y_train)
     
     # Predict labels
