@@ -1,8 +1,7 @@
 # xgboost_model.py
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import xgboost as xgb
 from sklearn.metrics import accuracy_score, classification_report
-from sklearn.preprocessing import label_binarize
+from sklearn.preprocessing import label_binarize, MinMaxScaler, StandardScaler
 import os
 
 def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
