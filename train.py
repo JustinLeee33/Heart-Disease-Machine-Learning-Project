@@ -54,7 +54,12 @@ def main():
     # Import and process the data
     data = process_data('data/csv/heart_disease_uci.csv')
     visualize_data(data)
-    converted_data, category_mappings = convert_categorical_to_int(data)
+    # Define the scaler
+    scaler = MinMaxScaler()
+
+    # Normalize the data
+    data_scaled = scaler.fit_transform(data)
+    converted_data, category_mappings = convert_categorical_to_int(data_scaled)
     print("Category Mappings:\n", category_mappings)
     
     # Separate features and target
