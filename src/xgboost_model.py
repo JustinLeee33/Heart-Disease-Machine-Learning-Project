@@ -1,5 +1,5 @@
 # xgboost_model.py
-
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 import xgboost as xgb
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.preprocessing import label_binarize
