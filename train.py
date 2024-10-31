@@ -16,7 +16,7 @@ from sklearn.metrics import precision_recall_curve, average_precision_score
 import os
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, precision_score, recall_score
-from sklearn.preprocessing import label_binarize
+from sklearn.preprocessing import label_binarize, MinMaxScaler, StandardScaler
 
 def plot_precision_recall_curves(y_test, models_scores, n_classes, plot_dir='data/plots'):
     """Plots Precision vs Recall for all models in multiclass setting."""
