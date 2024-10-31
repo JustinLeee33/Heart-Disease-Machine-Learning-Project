@@ -9,7 +9,7 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     """Train and evaluate an optimized XGBoost model with hyperparameter tuning and feature importance plot."""
     
     # Set up the XGBoost classifier with initial parameters
-    model = xgb.XGBClassifier(eval_metric='mlogloss', objective='multi:softprob')
+    model = xgb.XGBClassifier(objective='multi:softprob')
     
     # Hyperparameter tuning using GridSearchCV
     param_grid = {
