@@ -3,6 +3,10 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import GridSearchCV
 import os
 from termcolor import colored  # Import for color logging
+import warnings  # Import for suppressing warnings
+
+# Suppress specific XGBoost warnings
+warnings.filterwarnings("ignore", category=UserWarning, message=".*Parameters: { \"use_label_encoder\" } are not used.*")
 
 def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
     """Train and evaluate XGBoost model with hyperparameter tuning and early stopping."""
@@ -26,9 +30,8 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     # Initialize the model
     print(colored("Initializing the XGBoost model...", "cyan"))
     model = xgb.XGBClassifier(
-         use_label_encoder=False,
-        eval_metric='mlogloss',
-        objective='multi:softprob'
+        eval_metric='mlogloss',  # Evaluation metric for multi-class classification
+        objective='multi:softprob'  # Multi-class classification objective
     )
 
     # Hyperparameter tuning with Grid Search
