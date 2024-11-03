@@ -50,7 +50,7 @@ def main():
     X_scaled = scaler.fit_transform(X)
 
     # Convert scaled features back to DataFrame
-    X = pd.DataFrame(X_scaled, columns=X.columns)
+    X = id.DataFrame(X_scaled, columns=X.columns)
 
     # Determine the number of classes
     n_classes = len(y.unique())
