@@ -13,10 +13,12 @@ from src.automl import automl_train_and_evaluate
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_recall_curve, average_precision_score
-import os
-import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, precision_score, recall_score
 from sklearn.preprocessing import label_binarize, MinMaxScaler, StandardScaler
+
+import matplotlib.pyplot as plt
+import pandas as pd
+import os
 
 def main():
     # Ensure the data/plots directory exists
