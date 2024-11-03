@@ -15,7 +15,7 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     param_grid = {
         'max_depth': [4, 6, 8],
         'learning_rate': [0.01, 0.1, 0.2],
-@@ -18,34 +23,51 @@
+            @@ -18,34 +23,51 @@
         'reg_lambda': [0.5, 1, 1.5]
     }
 
