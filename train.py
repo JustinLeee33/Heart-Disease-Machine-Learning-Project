@@ -18,32 +18,6 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, precision_score, recall_score
 from sklearn.preprocessing import label_binarize, MinMaxScaler, StandardScaler
 
-def plot_precision_recall_curves(y_test, models_scores, n_classes, plot_dir='data/plots'):
-    """Plots Precision vs Recall for all models in multiclass setting."""
-    # Binarize the output
-    y_test_binarized = label_binarize(y_test, classes=range(n_classes))
-
-    plt.figure(figsize=(10, 6))
-
-    for model_name, y_scores in models_scores.items():
-        # Compute Precision-Recall and plot curve for each class
-        precision = dict()
-        recall = dict()
-        average_precision = dict()
-        for i in range(n_classes):
-            precision[i], recall[i], _ = precision_recall_curve(y_test_binarized[:, i], y_scores[:, i])
-            average_precision[i] = average_precision_score(y_test_binarized[:, i], y_scores[:, i])
-            plt.plot(recall[i], precision[i], lw=2, label=f'{model_name} class {i} (AP={average_precision[i]:0.2f})')
-
-    plt.title('Precision-Recall Curves for Different Models and Classes')
-    plt.xlabel('Recall')
-    plt.ylabel('Precision')
-    plt.legend()
-    plt.grid(True)
-    plt.tight_layout()
-    plt.savefig(os.path.join(plot_dir, 'precision_recall_curves_multiclass.png'))
-    plt.close()
-
 def main():
     # Ensure the data/plots directory exists
     os.makedirs('data/plots', exist_ok=True)
@@ -124,5 +98,32 @@ def main():
 
     # Plot Precision vs Recall curves
     plot_precision_recall_curves(y_test, models_scores, n_classes, plot_dir='data/plots')
+
+def plot_precision_recall_curves(y_test, models_scores, n_classes, plot_dir='data/plots'):
+    """Plots Precision vs Recall for all models in multiclass setting."""
+    # Binarize the output
+    y_test_binarized = label_binarize(y_test, classes=range(n_classes))
+
+    plt.figure(figsize=(10, 6))
+
+    for model_name, y_scores in models_scores.items():
+        # Compute Precision-Recall and plot curve for each class
+        precision = dict()
+        recall = dict()
+        average_precision = dict()
+        for i in range(n_classes):
+            precision[i], recall[i], _ = precision_recall_curve(y_test_binarized[:, i], y_scores[:, i])
+            average_precision[i] = average_precision_score(y_test_binarized[:, i], y_scores[:, i])
+            plt.plot(recall[i], precision[i], lw=2, label=f'{model_name} class {i} (AP={average_precision[i]:0.2f})')
+
+    plt.title('Precision-Recall Curves for Different Models and Classes')
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.legend()
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig(os.path.join(plot_dir, 'precision_recall_curves_multiclass.png'))
+    plt.close()
+
 if __name__ == '__main__':
     main()
