@@ -1,19 +1,32 @@
-# xgboost_model.py
 import xgboost as xgb
 from sklearn.metrics import accuracy_score, classification_report
-from sklearn.preprocessing import label_binarize, MinMaxScaler, StandardScaler
 import os
 
 def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
-    """Train and evaluate XGBoost model."""
-    # Train the model, enabling multiclass support
-    model = xgb.XGBClassifier(use_label_encoder=False, eval_metric='mlogloss')  # Use 'mlogloss' for multiclass
+    """Train and evaluate XGBoost model with hyperparameter tuning."""
+
+    # Define hyperparameters for tuning
+    model = xgb.XGBClassifier(
+        use_label_encoder=False,
+        eval_metric='mlogloss',         # Multiclass log-loss
+        objective='multi:softprob',     # Multiclass probability output
+        max_depth=6,                    # Maximum tree depth
+        learning_rate=0.1,              # Step size shrinkage
+        n_estimators=100,               # Number of boosting rounds
+        subsample=0.8,                  # Fraction of samples per tree
+        colsample_bytree=0.8,           # Fraction of features per tree
+        gamma=1,                        # Minimum loss reduction for split
+        reg_alpha=0,                    # L1 regularization
+        reg_lambda=1                    # L2 regularization
+    )
+    
+    # Train the model
     model.fit(X_train, y_train)
 
     # Predict class labels
     y_pred = model.predict(X_test)
 
-    # Get predicted probabilities for all classes (n_samples, n_classes)
+    # Get predicted probabilities for all classes
     y_scores = model.predict_proba(X_test)
 
     # Evaluation
@@ -28,5 +41,4 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     # Ensure the plot directory exists
     os.makedirs(plot_dir, exist_ok=True)
 
-    # Return the trained model, predicted labels, and predicted probabilities for each class
     return model, y_pred, y_scores
