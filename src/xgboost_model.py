@@ -1,6 +1,6 @@
 import xgboost as xgb
 from sklearn.metrics import accuracy_score, classification_report
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 import os
 from termcolor import colored  # Import for color logging
 
@@ -23,22 +23,26 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
         'reg_lambda': [0.5, 1, 1.5]
     }
 
-    # Initialize the model without `use_label_encoder`
+    # Initialize the model
     print(colored("Initializing the XGBoost model...", "cyan"))
     model = xgb.XGBClassifier(
         eval_metric='mlogloss',
         objective='multi:softprob'
     )
 
-    # Hyperparameter tuning with Grid Search
-    print(colored("Starting Grid Search for hyperparameter tuning...", "cyan"))
-    grid_search = GridSearchCV(model, param_grid, scoring='accuracy', cv=3, n_jobs=-1, verbose=1)
-    grid_search.fit(X_train, y_train)
-    print(colored("Grid Search completed. Best hyperparameters found.", "green"))
+    # Hyperparameter tuning with Randomized Search
+    print(colored("Starting Randomized Search for hyperparameter tuning...", "cyan"))
+    randomized_search = RandomizedSearchCV(
+        model, param_distributions=param_grid, scoring='accuracy', cv=3, n_jobs=-1, n_iter=100, verbose=1, random_state=42
+    )
+    randomized_search.fit(X_train, y_train)
+    print(colored("Randomized Search completed. Best hyperparameters found.", "green"))
 
     # Train the best model with early stopping
     print(colored("Training the best model with early stopping...", "cyan"))
-    best_model = grid_search.best_estimator_
+    best_model = randomized_search.best_estimator_
+    
+    # Train with early stopping
     best_model.fit(X_train, y_train, early_stopping_rounds=10, eval_set=[(X_test, y_test)], verbose=False)
     print(colored("Model training completed.", "green"))
 
@@ -72,3 +76,7 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     
     # Return the model, predictions, and predicted probabilities (y_scores)
     return best_model, y_pred, y_scores
+
+# Example usage (assuming you have your train/test data ready)
+# X_train, X_test, y_train, y_test = your_data_split_function()
+# model, predictions, scores = xgb_train_and_evaluate(X_train, X_test, y_train, y_test)
