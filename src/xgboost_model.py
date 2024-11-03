@@ -23,10 +23,9 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
         'reg_lambda': [0.5, 1, 1.5]
     }
 
-    # Initialize the model
+    # Initialize the model without `use_label_encoder`
     print(colored("Initializing the XGBoost model...", "cyan"))
     model = xgb.XGBClassifier(
-        use_label_encoder=False,
         eval_metric='mlogloss',
         objective='multi:softprob'
     )
