@@ -26,7 +26,7 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     # Initialize the model
     print(colored("Initializing the XGBoost model...", "cyan"))
     model = xgb.XGBClassifier(
-        # use_label_encoder=False,
+         use_label_encoder=False,
         eval_metric='mlogloss',
         objective='multi:softprob'
     )
