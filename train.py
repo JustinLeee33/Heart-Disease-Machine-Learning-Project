@@ -54,14 +54,11 @@ def main():
     # Import and process the data
     data = process_data('data/csv/heart_disease_uci.csv')
     visualize_data(data)
-    # Define the scaler
-    scaler = MinMaxScaler()
 
-    # Normalize the data
-    data_scaled = scaler.fit_transform(data)
-    converted_data, category_mappings = convert_categorical_to_int(data_scaled)
+    # Convert categorical columns to integers
+    converted_data, category_mappings = convert_categorical_to_int(data)
     print("Category Mappings:\n", category_mappings)
-    
+
     # Separate features and target
     if 'num' in converted_data.columns:
         X = converted_data.drop(columns=['num'])
@@ -69,11 +66,22 @@ def main():
     else:
         raise KeyError("The 'num' column (ground truth) is missing from the dataset.")
 
+    # Define the scaler
+    scaler = MinMaxScaler()
+
+    # Normalize the features
+    X_scaled = scaler.fit_transform(X)
+
+    # Convert scaled features back to DataFrame
+    X = pd.DataFrame(X_scaled, columns=X.columns)
+
     # Determine the number of classes
     n_classes = len(y.unique())
 
     # Split data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
     # Define models
     models = {
@@ -82,7 +90,7 @@ def main():
         'Random Forest': rf_train_and_evaluate,
         'Gradient Boosting': gb_train_and_evaluate,
         'SVM': svm_train_and_evaluate,
-        'XGBoost': xgb_train_and_evaluate, 
+        'XGBoost': xgb_train_and_evaluate,
         'AutoML (TPOT)': automl_train_and_evaluate,
     }
 
@@ -92,7 +100,9 @@ def main():
     # Train and evaluate models
     for model_name, model_func in models.items():
         print(f"Training and evaluating {model_name}...")
-        model, y_pred, y_scores = model_func(X_train, X_test, y_train, y_test, plot_dir='data/plots')
+        model, y_pred, y_scores = model_func(
+            X_train, X_test, y_train, y_test, plot_dir='data/plots'
+        )
 
         # Confusion matrix
         cm = confusion_matrix(y_test, y_pred)
@@ -114,6 +124,5 @@ def main():
 
     # Plot Precision vs Recall curves
     plot_precision_recall_curves(y_test, models_scores, n_classes, plot_dir='data/plots')
-
 if __name__ == '__main__':
     main()
