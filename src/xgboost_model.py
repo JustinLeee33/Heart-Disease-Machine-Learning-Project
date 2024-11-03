@@ -1,16 +1,15 @@
 import xgboost as xgb
 from sklearn.metrics import accuracy_score, classification_report
-from sklearn.model_selection import RandomizedSearchCV  # Changed to RandomizedSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 import os
 from termcolor import colored
 import warnings
-import numpy as np
 
 # Suppress specific XGBoost warnings
 warnings.filterwarnings("ignore", category=UserWarning, message=".*Parameters: { \"use_label_encoder\" } are not used.*")
 
 def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
-    """Train and evaluate XGBoost model with hyperparameter tuning and early stopping."""
+    """Train and evaluate XGBoost model with hyperparameter tuning."""
     
     # Log the start of the process
     print(colored("\n--- XGBoost Training and Evaluation Started ---", "green"))
@@ -20,7 +19,7 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     param_dist = {
         'max_depth': [4, 6, 8],
         'learning_rate': [0.01, 0.1],
-        'n_estimators': [100, 200],  # Reduced the range
+        'n_estimators': [100, 200],
         'subsample': [0.6, 0.8],
         'colsample_bytree': [0.6, 0.8],
         'gamma': [0, 1],
@@ -41,10 +40,12 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     randomized_search.fit(X_train, y_train)
     print(colored("Randomized Search completed. Best hyperparameters found.", "green"))
 
-    # Train the best model with early stopping
-    print(colored("Training the best model with early stopping...", "cyan"))
+    # Train the best model
+    print(colored("Training the best model...", "cyan"))
     best_model = randomized_search.best_estimator_
-    best_model.fit(X_train, y_train, early_stopping_rounds=10, eval_set=[(X_test, y_test)], verbose=False)
+    
+    # Include eval_set and eval_metric during training
+    best_model.fit(X_train, y_train, eval_metric='mlogloss', eval_set=[(X_test, y_test)], verbose=True)  # verbose=True will print the progress
     print(colored("Model training completed.", "green"))
 
     # Predict and evaluate
