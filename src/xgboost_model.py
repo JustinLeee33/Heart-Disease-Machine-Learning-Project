@@ -5,8 +5,8 @@ import os
 from termcolor import colored
 import warnings
 
-# Suppress specific XGBoost warnings
-warnings.filterwarnings("ignore", category=UserWarning, message=".*Parameters: { \"use_label_encoder\" } are not used.*")
+# Suppress specific warnings from XGBoost
+warnings.filterwarnings("ignore", category=UserWarning, message=r".*Parameters: {.*use_label_encoder.*}.*")
 
 
 def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots', random_state=42):
@@ -31,8 +31,7 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     print(colored("Initializing the XGBoost model...", "cyan"))
     model = xgb.XGBClassifier(
         eval_metric='mlogloss',
-        objective='multi:softprob',
-        use_label_encoder=False
+        objective='multi:softprob'
     )
 
     # Perform hyperparameter tuning with Randomized Search
