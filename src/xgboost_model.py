@@ -29,7 +29,7 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     # Initialize the XGBoost model
     print(colored("Initializing the XGBoost model...", "cyan"))
     model = xgb.XGBClassifier(
-        objective='multi:softprob',
+        objective='binary:logistic',
         use_label_encoder=False,  # Suppress deprecated warning
         random_state=random_state
     )
@@ -57,10 +57,13 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
 
     # Train the best model with early stopping (adjusted method for fitting)
     print(colored("Training the best model...", "cyan"))
+    
+    # Use eval_set and early_stopping_rounds properly
     best_model.fit(
         X_train,
         y_train,
-        eval_set=[(X_test, y_test)],  # Validation set for early stopping
+        eval_set=[(X_test, y_test)],  # Provide validation set
+        eval_metric="logloss",  # You can specify other metrics like "error" or "auc"
         early_stopping_rounds=10,  # Stop after 10 rounds if no improvement
         verbose=True
     )
