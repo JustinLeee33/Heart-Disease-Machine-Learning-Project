@@ -1,3 +1,9 @@
+from termcolor import colored
+import xgboost as xgb
+import numpy as np
+from sklearn.metrics import accuracy_score, classification_report
+import os
+
 def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
     """Train and evaluate XGBoost model with hyperparameter tuning."""
     
