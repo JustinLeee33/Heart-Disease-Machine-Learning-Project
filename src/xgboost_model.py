@@ -1,5 +1,13 @@
+import xgboost as xgb
 import numpy as np
 from sklearn.metrics import accuracy_score, classification_report
+from sklearn.model_selection import RandomizedSearchCV
+import os
+from termcolor import colored  # Ensure this import is included
+import warnings
+
+# Suppress specific XGBoost warnings
+warnings.filterwarnings("ignore", category=UserWarning, message=".*Parameters: { \"use_label_encoder\" } are not used.*")
 
 def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
     """Train and evaluate XGBoost model with hyperparameter tuning."""
@@ -7,7 +15,7 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     # Log the start of the process
     print(colored("\n--- XGBoost Training and Evaluation Started ---", "green"))
     
-    # Define a smaller hyperparameter grid for tuning (for Randomized Search)
+    # Define a smaller hyperparameter grid for tuning
     print(colored("Defining hyperparameter grid for tuning...", "cyan"))
     param_dist = {
         'max_depth': [3, 4, 5, 6],
