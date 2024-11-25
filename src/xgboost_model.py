@@ -1,12 +1,5 @@
-import xgboost as xgb
+import numpy as np
 from sklearn.metrics import accuracy_score, classification_report
-from sklearn.model_selection import RandomizedSearchCV
-import os
-from termcolor import colored
-import warnings
-
-# Suppress specific XGBoost warnings
-warnings.filterwarnings("ignore", category=UserWarning, message=".*Parameters: { \"use_label_encoder\" } are not used.*")
 
 def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
     """Train and evaluate XGBoost model with hyperparameter tuning."""
@@ -73,8 +66,14 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
 
     # Predict and evaluate
     print(colored("Predicting and evaluating model performance...", "cyan"))
-    y_pred = best_model.predict(dtest)
-    y_scores = best_model.predict(dtest)  # For multi-class probabilities
+    y_pred = best_model.predict(dtest)  # Get class labels directly (not probabilities)
+    
+    # If using multi-class, ensure that we get the highest probability class (argmax)
+    if len(np.unique(y_test)) > 2:  # For multi-class problems
+        y_pred = np.argmax(y_pred, axis=1)
+    
+    y_scores = best_model.predict(dtest)  # Keep probabilities for the evaluation
+
     print(colored("Prediction completed.", "green"))
 
     # Calculate and print metrics
