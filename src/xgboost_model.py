@@ -1,10 +1,9 @@
 import xgboost as xgb
 from sklearn.metrics import accuracy_score, classification_report
-from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 import os
 from termcolor import colored
 import warnings
-import matplotlib.pyplot as plt
 
 # Suppress specific XGBoost warnings
 warnings.filterwarnings("ignore", category=UserWarning, message=".*Parameters: { \"use_label_encoder\" } are not used.*")
@@ -31,8 +30,7 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     # Initialize the model
     print(colored("Initializing the XGBoost model...", "cyan"))
     model = xgb.XGBClassifier(
-        eval_metric='mlogloss',
-        objective='multi:softprob'
+        objective='multi:softprob',  # Make sure the objective is defined
     )
 
     # Randomized Search with Cross Validation
@@ -57,14 +55,26 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     print(colored("Training the best model from Random Search...", "cyan"))
     best_model = random_search.best_estimator_
 
-    # Include eval_set and eval_metric during training
-    best_model.fit(X_train, y_train, eval_metric='mlogloss', eval_set=[(X_test, y_test)], verbose=True)  # verbose=True will print the progress
+    # Create DMatrix objects for training and testing
+    dtrain = xgb.DMatrix(X_train, label=y_train)
+    dtest = xgb.DMatrix(X_test, label=y_test)
+
+    # Set evaluation metric and eval_set during training
+    evals = [(dtest, 'eval'), (dtrain, 'train')]
+    best_model = xgb.train(
+        params=best_params,
+        dtrain=dtrain,
+        num_boost_round=200,
+        evals=evals,
+        early_stopping_rounds=10,  # Optional: stop early if no improvement
+    )
+
     print(colored("Model training completed.", "green"))
 
     # Predict and evaluate
     print(colored("Predicting and evaluating model performance...", "cyan"))
-    y_pred = best_model.predict(X_test)
-    y_scores = best_model.predict_proba(X_test)
+    y_pred = best_model.predict(dtest)
+    y_scores = best_model.predict(dtest)  # For multi-class probabilities
     print(colored("Prediction completed.", "green"))
 
     # Calculate and print metrics
@@ -89,33 +99,3 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
 
     # Return the model, predictions, and predicted probabilities (y_scores)
     return best_model, y_pred, y_scores
-
-def plot_grid_search_results(param_values, accuracies):
-    """Plot Grid Search results for visualizing hyperparameter tuning."""
-    plt.plot(param_values, accuracies, marker='o')
-    plt.title('Grid Search: Accuracy vs Max Depth')
-    plt.xlabel('Max Depth')
-    plt.ylabel('Accuracy')
-    plt.grid(True)
-    plt.show()
-
-# Example of running a Grid Search for max_depth hyperparameter values (if you want to visualize grid search results)
-def grid_search_max_depth(X_train, y_train, X_test, y_test):
-    param_grid = {'max_depth': [2, 3, 4, 5, 6]}
-    grid_search = GridSearchCV(estimator=xgb.XGBClassifier(), param_grid=param_grid, scoring='accuracy', cv=3)
-    grid_search.fit(X_train, y_train)
-
-    best_model = grid_search.best_estimator_
-    best_max_depth = grid_search.best_params_['max_depth']
-    print(f"Best max_depth from Grid Search: {best_max_depth}")
-
-    # Evaluate the model
-    y_pred = best_model.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    print(f"Accuracy for best max_depth ({best_max_depth}): {accuracy:.4f}")
-
-    # Plot the results for max_depth grid search
-    accuracies = grid_search.cv_results_['mean_test_score']
-    plot_grid_search_results(param_values=param_grid['max_depth'], accuracies=accuracies)
-
-# You can call grid_search_max_depth with your data to visualize the tuning of `max_depth`.
