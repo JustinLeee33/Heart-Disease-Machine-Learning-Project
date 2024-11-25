@@ -88,7 +88,7 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     # Return the model, predictions, and predicted probabilities (y_scores)
     return best_model, y_pred, y_scores
 
-     xgb_model = XGBClassifier(
+    xgb_model = XGBClassifier(
         # ...your hyperparameters
         early_stopping_rounds=10,  # Stop if validation score doesn't improve for 10 rounds
         eval_set=[(X_val, y_val)],  # Validation data
