@@ -10,10 +10,10 @@ warnings.filterwarnings("ignore", category=UserWarning, message=".*Parameters: {
 
 def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
     """Train and evaluate XGBoost model with hyperparameter tuning."""
-    
+
     # Log the start of the process
     print(colored("\n--- XGBoost Training and Evaluation Started ---", "green"))
-    
+
     # Define a smaller hyperparameter grid for tuning
     print(colored("Defining hyperparameter grid for tuning...", "cyan"))
     param_dist = {
@@ -30,13 +30,14 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     # Initialize the model
     print(colored("Initializing the XGBoost model...", "cyan"))
     model = xgb.XGBClassifier(
-        eval_metric='mlogloss',
-        objective='multi:softprob'
+        objective='multi:softprob',  # Suitable for multi-class classification
+        use_label_encoder=False,     # Disable label encoder warning
+        random_state=42
     )
 
     # Hyperparameter tuning with Randomized Search
     random_search = RandomizedSearchCV(
-        estimator=xgb_model,
+        estimator=model,  # Use model here
         param_distributions=param_dist,
         n_iter=50,  # Number of random iterations
         scoring='accuracy',  # Choose your scoring metric
@@ -50,12 +51,14 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
 
     # Get the best hyperparameters
     best_params = random_search.best_params_
+    print(colored(f"Best Hyperparameters: {best_params}", "magenta"))
+    
     # Train the best model
     print(colored("Training the best model...", "cyan"))
-    best_model = randomized_search.best_estimator_
-    
+    best_model = random_search.best_estimator_
+
     # Include eval_set and eval_metric during training
-    best_model.fit(X_train, y_train, eval_metric='mlogloss', eval_set=[(X_test, y_test)], verbose=True)  # verbose=True will print the progress
+    best_model.fit(X_train, y_train, eval_set=[(X_test, y_test)], early_stopping_rounds=10, verbose=True)
     print(colored("Model training completed.", "green"))
 
     # Predict and evaluate
