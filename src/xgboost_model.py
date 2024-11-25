@@ -57,8 +57,8 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     print(colored("Training the best model...", "cyan"))
     best_model.fit(
         X_train, y_train,
-        eval_set=[(X_test, y_test)],
-        early_stopping_rounds=10,
+        eval_set=[(X_test, y_test)],  # Validation set for early stopping
+        early_stopping_rounds=10,  # Stop if no improvement in 10 rounds
         verbose=True
     )
     print(colored("Model training completed.", "green"))
