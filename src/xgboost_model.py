@@ -58,6 +58,14 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     best_model.fit(X_train, y_train, eval_metric='mlogloss', eval_set=[(X_test, y_test)], verbose=True)  # verbose=True will print the progress
     print(colored("Model training completed.", "green"))
 
+    xgb_model = XGBClassifier(
+        # ...your hyperparameters
+        early_stopping_rounds=10,  # Stop if validation score doesn't improve for 10 rounds
+        eval_set=[(X_val, y_val)],  # Validation data
+        eval_metric='logloss',  # Choose your evaluation metric
+    )
+    xgb_model.fit(X_train, y_train)
+
     # Predict and evaluate
     print(colored("Predicting and evaluating model performance...", "cyan"))
     y_pred = best_model.predict(X_test)
