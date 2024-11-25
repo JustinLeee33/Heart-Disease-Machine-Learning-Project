@@ -1,15 +1,5 @@
-import xgboost as xgb
-from sklearn.metrics import accuracy_score, classification_report
-from sklearn.model_selection import RandomizedSearchCV
-import os
-from termcolor import colored
-import warnings
-
-# Suppress specific warnings from XGBoost
-warnings.filterwarnings("ignore", category=UserWarning, message=r".*Parameters: {.*use_label_encoder.*}.*")
-
 def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots', random_state=42):
-    """Train and evaluate XGBoost model with hyperparameter tuning."""
+    """Train and evaluate XGBoost model with hyperparameter tuning and early stopping."""
 
     print(colored("\n--- XGBoost Training and Evaluation Started ---", "green"))
 
@@ -30,7 +20,8 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     print(colored("Initializing the XGBoost model...", "cyan"))
     model = xgb.XGBClassifier(
         objective='multi:softprob',
-        eval_metric='mlogloss'  # Specify evaluation metric during initialization
+        use_label_encoder=False,  # Suppress deprecated warning
+        random_state=random_state
     )
 
     # Perform hyperparameter tuning with Randomized Search
@@ -54,9 +45,11 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     print(colored(f"Best Hyperparameters: {best_params}", "magenta"))
     best_model = random_search.best_estimator_
 
+    # Train the best model with early stopping
     print(colored("Training the best model...", "cyan"))
     best_model.fit(
-        X_train, y_train,
+        X_train,
+        y_train,
         eval_set=[(X_test, y_test)],  # Validation set for early stopping
         early_stopping_rounds=10,  # Stop if no improvement in 10 rounds
         verbose=True
