@@ -1,8 +1,8 @@
-from termcolor import colored
 import xgboost as xgb
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import RandomizedSearchCV
 import os
+from termcolor import colored
 import warnings
 
 # Suppress specific XGBoost warnings
@@ -55,7 +55,7 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     print(colored(f"Best Hyperparameters: {best_params}", "magenta"))
     best_model = random_search.best_estimator_
 
-    # Train the best model with early stopping
+    # Train the best model with early stopping (adjusted method for fitting)
     print(colored("Training the best model...", "cyan"))
     best_model.fit(
         X_train,
