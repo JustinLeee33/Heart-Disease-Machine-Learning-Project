@@ -1,3 +1,14 @@
+# Add this import at the top of your script
+from termcolor import colored
+import xgboost as xgb
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.model_selection import RandomizedSearchCV
+import os
+import warnings
+
+# Suppress specific XGBoost warnings
+warnings.filterwarnings("ignore", category=UserWarning, message=".*Parameters: { \"use_label_encoder\" } are not used.*")
+
 def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots', random_state=42):
     """Train and evaluate XGBoost model with hyperparameter tuning and early stopping."""
 
