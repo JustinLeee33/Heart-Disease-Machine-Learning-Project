@@ -8,7 +8,6 @@ import warnings
 # Suppress specific warnings from XGBoost
 warnings.filterwarnings("ignore", category=UserWarning, message=r".*Parameters: {.*use_label_encoder.*}.*")
 
-
 def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots', random_state=42):
     """Train and evaluate XGBoost model with hyperparameter tuning."""
 
@@ -30,8 +29,8 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     # Initialize the XGBoost model
     print(colored("Initializing the XGBoost model...", "cyan"))
     model = xgb.XGBClassifier(
-        eval_metric='mlogloss',
-        objective='multi:softprob'
+        objective='multi:softprob',
+        eval_metric='mlogloss'  # Specify evaluation metric during initialization
     )
 
     # Perform hyperparameter tuning with Randomized Search
@@ -59,7 +58,6 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     best_model.fit(
         X_train, y_train,
         eval_set=[(X_test, y_test)],
-        eval_metric='mlogloss',
         early_stopping_rounds=10,
         verbose=True
     )
