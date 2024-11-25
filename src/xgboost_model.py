@@ -17,8 +17,8 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     # Define a smaller hyperparameter grid for tuning
     print(colored("Defining hyperparameter grid for tuning...", "cyan"))
     param_dist = {
-        'max_depth': [4, 6, 8],
-        'learning_rate': [0.01, 0.1],
+        'max_depth': [3, 4, 5, 6],
+        'learning_rate': [0.1, 0.01, 0.001], 
         'n_estimators': [100, 200],
         'subsample': [0.6, 0.8],
         'colsample_bytree': [0.6, 0.8],
@@ -35,11 +35,21 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     )
 
     # Hyperparameter tuning with Randomized Search
-    print(colored("Starting Randomized Search for hyperparameter tuning...", "cyan"))
-    randomized_search = RandomizedSearchCV(model, param_dist, n_iter=30, scoring='accuracy', cv=3, n_jobs=-1, verbose=1, random_state=42)
-    randomized_search.fit(X_train, y_train)
-    print(colored("Randomized Search completed. Best hyperparameters found.", "green"))
+    random_search = RandomizedSearchCV(
+        estimator=xgb_model,
+        param_distributions=param_dist,
+        n_iter=50,  # Number of random iterations
+        scoring='accuracy',  # Choose your scoring metric
+        cv=3,  # Number of cross-validation folds
+        n_jobs=-1,  # Use all available cores
+        verbose=2,  # Increase verbosity
+    )
 
+    # Perform the randomized search
+    random_search.fit(X_train, y_train)
+
+    # Get the best hyperparameters
+    best_params = random_search.best_params_
     # Train the best model
     print(colored("Training the best model...", "cyan"))
     best_model = randomized_search.best_estimator_
