@@ -34,10 +34,7 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     print(colored("Predicting and evaluating model performance...", "cyan"))
     y_pred = best_model.predict(X_test)  # Get predicted class labels
     
-    # Check if it's a multi-class problem
-    if len(np.unique(y_test)) > 2:  # For multi-class problems
-        y_pred = np.argmax(y_pred, axis=1)  # Apply argmax only if multi-class
-    
+    # No need for np.argmax if it's already a class label
     y_scores = best_model.predict_proba(X_test)  # Get predicted probabilities for evaluation
     
     print(colored("Prediction completed.", "green"))
