@@ -1,4 +1,3 @@
-# Add this import at the top of your script
 from termcolor import colored
 import xgboost as xgb
 from sklearn.metrics import accuracy_score, classification_report
@@ -7,7 +6,7 @@ import os
 import warnings
 
 # Suppress specific XGBoost warnings
-warnings.filterwarnings("ignore", category=UserWarning, message=".*Parameters: { \"use_label_encoder\" } are not used.*")
+warnings.filterwarnings("ignore", category=UserWarning, message=".*use_label_encoder.*")
 
 def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots', random_state=42):
     """Train and evaluate XGBoost model with hyperparameter tuning and early stopping."""
@@ -17,8 +16,8 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     # Define hyperparameter grid for tuning
     print(colored("Defining hyperparameter grid for tuning...", "cyan"))
     param_dist = {
-        'max_depth': [3, 4, 5, 6],
-        'learning_rate': [0.1, 0.01, 0.001], 
+        'max_depth': [3, 4, 5],
+        'learning_rate': [0.1, 0.01], 
         'n_estimators': [100, 200],
         'subsample': [0.6, 0.8],
         'colsample_bytree': [0.6, 0.8],
@@ -40,12 +39,12 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     random_search = RandomizedSearchCV(
         estimator=model,
         param_distributions=param_dist,
-        n_iter=50,  # Number of random iterations
-        scoring='accuracy',  # Choose your scoring metric
-        cv=3,  # Number of cross-validation folds
-        n_jobs=-1,  # Use all available cores
-        verbose=2,  # Increase verbosity for debugging
-        random_state=random_state  # Ensures reproducibility
+        n_iter=10,  # Reduced number of iterations for quicker results
+        scoring='accuracy',
+        cv=2,  # Reduced number of cross-validation folds
+        n_jobs=-1,
+        verbose=2,
+        random_state=random_state
     )
 
     # Perform randomized search
@@ -62,7 +61,7 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
         X_train,
         y_train,
         eval_set=[(X_test, y_test)],  # Validation set for early stopping
-        early_stopping_rounds=10,  # Stop if no improvement in 10 rounds
+        early_stopping_rounds=10,  # Stop after 10 rounds if no improvement
         verbose=True
     )
     print(colored("Model training completed.", "green"))
