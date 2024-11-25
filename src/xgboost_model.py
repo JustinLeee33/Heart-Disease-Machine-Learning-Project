@@ -72,7 +72,7 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     print(report)
 
     # Ensure plot directory exists
-    os.makedirs(plot_dir, exist_ok=True
+    os.makedirs(plot_dir, exist_ok=True)
 
     xgb_model = XGBClassifier(
         # ...your hyperparameters
