@@ -1,4 +1,6 @@
 from termcolor import colored
+import matplotlib.pyplot as plt
+import pandas as pd
 import xgboost as xgb
 import numpy as np
 from sklearn.metrics import accuracy_score, classification_report
