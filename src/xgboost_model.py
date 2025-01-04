@@ -15,14 +15,14 @@ def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plot
     # Initialize the model with the best parameters from RandomizedSearchCV
     print(colored("Initializing the XGBoost model...", "cyan"))
     best_model = xgb.XGBClassifier(
-        subsample=0.8,
-        reg_lambda=1,
-        reg_alpha=0.1,
-        n_estimators=500,
-        max_depth=5,
+        subsample=0.85,
+        reg_lambda=2,
+        reg_alpha=0.5,
+        n_estimators=1000,
+        max_depth=6,
         learning_rate=0.05,
-        gamma=0.1,
-        colsample_bytree=0.8,
+        gamma=0.3,
+        colsample_bytree=0.85,
         objective='multi:softmax',  # For multi-class classification
         eval_metric='mlogloss'
     )
