@@ -69,13 +69,13 @@ def main():
 
     # Define models
     models = {
-        'Logistic Regression': lr_train_and_evaluate,
-        'Decision Tree': dt_train_and_evaluate,
-        'Random Forest': rf_train_and_evaluate,
-        'Gradient Boosting': gb_train_and_evaluate,
-        'SVM': svm_train_and_evaluate,
+        #'Logistic Regression': lr_train_and_evaluate,
+        #'Decision Tree': dt_train_and_evaluate,
+        #'Random Forest': rf_train_and_evaluate,
+        #'Gradient Boosting': gb_train_and_evaluate,
+        #'SVM': svm_train_and_evaluate,
         'XGBoost': xgb_train_and_evaluate,
-        'AutoML (TPOT)': automl_train_and_evaluate,
+        #'AutoML (TPOT)': automl_train_and_evaluate,
     }
 
     # Store scores for plotting
