@@ -6,8 +6,8 @@ from src.decision_tree import dt_train_and_evaluate
 from src.random_forest import rf_train_and_evaluate
 from src.gradient_boosting import gb_train_and_evaluate
 from src.svm import svm_train_and_evaluate
-from src.xgboost_model import xgb_train_and_evaluate
 from src.xgboost_model import tune_and_plot_xgb
+from src.xgboost_model import xgb_train_and_evaluate
 from src.automl import automl_train_and_evaluate
 
 from sklearn.model_selection import train_test_split
@@ -75,7 +75,7 @@ def main():
         #'Random Forest': rf_train_and_evaluate,
         #'Gradient Boosting': gb_train_and_evaluate,
         #'SVM': svm_train_and_evaluate,
-        'XGBoost': [xgb_train_and_evaluate,tune_and_plot_xgb]
+        'XGBoost': [tune_and_plot_xgb, xgb_train_and_evaluate]
         #'AutoML (TPOT)': automl_train_and_evaluate,
     }
 
