@@ -7,6 +7,7 @@ from src.random_forest import rf_train_and_evaluate
 from src.gradient_boosting import gb_train_and_evaluate
 from src.svm import svm_train_and_evaluate
 from src.xgboost_model import xgb_train_and_evaluate
+from src.xgboost_model import tune_and_plot_xgb
 from src.automl import automl_train_and_evaluate
 
 from sklearn.model_selection import train_test_split
