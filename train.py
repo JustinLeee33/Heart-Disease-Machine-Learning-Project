@@ -75,7 +75,7 @@ def main():
         #'Gradient Boosting': gb_train_and_evaluate,
         #'SVM': svm_train_and_evaluate,
         'XGBoost': xgb_train_and_evaluate,
-        'XGBoost': tune_and_plot_xgb
+        'XGBoost': tune_and_plot_xgb,
         #'AutoML (TPOT)': automl_train_and_evaluate,
     }
 
