@@ -87,6 +87,10 @@ def tune_and_plot_xgb(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
     
     print(colored("\n--- Hyperparameter Tuning and Visualization Completed ---", "green"))
 
+    y_scores = model.predict_proba(X_test)
+    
+    return model, y_pred, y_scores
+
 def xgb_train_and_evaluate(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
     """Train and evaluate XGBoost model with hyperparameter tuning."""
     
