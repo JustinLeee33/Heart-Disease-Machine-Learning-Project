@@ -6,12 +6,16 @@ import numpy as np
 from sklearn.metrics import accuracy_score, classification_report
 import os
 
-def tune_and_plot_xgb(X_train, X_test, y_train, y_test, n_estimators_list, max_depth_list, plot_dir='data/plots'):
+def tune_and_plot_xgb(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
     """
     Train and evaluate XGBoost with varying n_estimators and max_depth,
     and create plots to visualize performance.
     """
     print(colored("\n--- Hyperparameter Tuning and Visualization Started ---", "green"))
+
+    # Define hyperparameter ranges
+    n_estimators_list = [50, 100, 150, 200]  # Adjust as needed
+    max_depth_list = [3, 5, 7, 9]            # Adjust as needed
     
     # Ensure plot directory exists
     os.makedirs(plot_dir, exist_ok=True)
