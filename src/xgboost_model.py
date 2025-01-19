@@ -9,13 +9,13 @@ import os
 def tune_and_plot_xgb(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
     """
     Train and evaluate XGBoost with varying n_estimators and max_depth,
-    and create plots to visualize performance.
+    and create a heatmap to visualize performance.
     """
     print(colored("\n--- Hyperparameter Tuning and Visualization Started ---", "green"))
 
     # Define hyperparameter ranges
-    n_estimators_list = [50, 100, 150, 200]  # Adjust as needed
-    max_depth_list = [3, 5, 7, 9]            # Adjust as needed
+    n_estimators_list = np.linspace(10, 200, num=20, dtype=int)  # min=50, max=200, 4 values
+    max_depth_list = np.linspace(1, 50, num=50, dtype=int)        # min=3, max=9, 4 values
     
     # Ensure plot directory exists
     os.makedirs(plot_dir, exist_ok=True)
@@ -54,33 +54,31 @@ def tune_and_plot_xgb(X_train, X_test, y_train, y_test, plot_dir='data/plots'):
     # Convert results to a DataFrame
     results_df = pd.DataFrame(results)
     
-    # Plot accuracy vs n_estimators for each max_depth
-    for max_depth in max_depth_list:
-        subset = results_df[results_df['max_depth'] == max_depth]
-        plt.figure()
-        plt.plot(subset['n_estimators'], subset['accuracy'], marker='o')
-        plt.title(f'Accuracy vs n_estimators (max_depth={max_depth})')
-        plt.xlabel('n_estimators')
-        plt.ylabel('Accuracy')
-        plt.grid()
-        plot_path = os.path.join(plot_dir, f'accuracy_vs_n_estimators_max_depth_{max_depth}.png')
-        plt.savefig(plot_path)
-        print(colored(f"Plot saved to {plot_path}", "green"))
-        plt.close()
+    # Create pivot table for heatmap
+    pivot_table = results_df.pivot("max_depth", "n_estimators", "accuracy")
     
-    # Plot accuracy vs max_depth for each n_estimators
-    for n_estimators in n_estimators_list:
-        subset = results_df[results_df['n_estimators'] == n_estimators]
-        plt.figure()
-        plt.plot(subset['max_depth'], subset['accuracy'], marker='o')
-        plt.title(f'Accuracy vs max_depth (n_estimators={n_estimators})')
-        plt.xlabel('max_depth')
-        plt.ylabel('Accuracy')
-        plt.grid()
-        plot_path = os.path.join(plot_dir, f'accuracy_vs_max_depth_n_estimators_{n_estimators}.png')
-        plt.savefig(plot_path)
-        print(colored(f"Plot saved to {plot_path}", "green"))
-        plt.close()
+    # Plot heatmap
+    plt.figure(figsize=(10, 8))
+    heatmap = plt.imshow(pivot_table, cmap="viridis", aspect="auto", origin="lower")
+    plt.colorbar(heatmap, label="Accuracy")
+    
+    # Add labels and title
+    plt.xticks(range(len(n_estimators_list)), n_estimators_list)
+    plt.yticks(range(len(max_depth_list)), max_depth_list)
+    plt.xlabel("n_estimators")
+    plt.ylabel("max_depth")
+    plt.title("Hyperparameter Tuning Heatmap: Accuracy")
+    
+    # Annotate cells with accuracy values
+    for i in range(len(max_depth_list)):
+        for j in range(len(n_estimators_list)):
+            plt.text(j, i, f"{pivot_table.iloc[i, j]:.4f}", ha="center", va="center", color="white")
+    
+    # Save the plot
+    heatmap_path = os.path.join(plot_dir, "xgb_hyperparameter_tuning_heatmap.png")
+    plt.savefig(heatmap_path)
+    print(colored(f"Heatmap saved to {heatmap_path}", "green"))
+    plt.close()
     
     # Save the results to a CSV file
     results_csv_path = os.path.join(plot_dir, 'xgb_hyperparameter_tuning_results.csv')
