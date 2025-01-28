@@ -98,7 +98,7 @@ Contributions are welcome! Please create an issue or submit a pull request for a
 This project is licensed under the [MIT License](LICENSE).
 
 ## Contact
-For any questions or feedback, please contact [your email/contact info].
+For any questions or feedback, please contact justinleethirtythree@gmail.com or (803) 944-7922
 
 ---
 
