@@ -4,18 +4,7 @@
 ## Overview
 This repository is dedicated to building and evaluating machine learning models to predict heart disease outcomes based on medical data. The project encompasses various data processing, modeling, and evaluation strategies, leveraging popular machine learning frameworks and Python libraries.
 
-## Resources
-
-### Paper
-[![Justin Lee Heart Disease Paper](assets/Justin_Lee_Heart_Disease_Paper_thumbnail.png)](assets/Justin_Lee_Heart_Disease_Paper(2).pdf)
-*Click the thumbnail to download the full paper.*
-
----
-
-### Presentation
-[![Justin Lee Heart Disease Presentation](assets/Justin_Lee_Heart_Disease_Presentation_thumbnail.png)](assets/Justin_Lee_Heart_Disease_Presentation.pdf)
-*Click the thumbnail to download the full presentation.*
-
+View /Assets for the full research paper and presentation.
 
 ## Project Structure
 The repository is structured as follows:
