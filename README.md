@@ -7,7 +7,7 @@ This repository is dedicated to building and evaluating machine learning models 
 ## Resources
 
 ### Paper
-[![Justin Lee Heart Disease Paper](assets/Justin_Lee_Heart_Disease_Paper_thumbnail.png)(assets/Justin_Lee_Heart_Disease_Paper (2).pdf)
+[![Justin Lee Heart Disease Paper](assets/Justin_Lee_Heart_Disease_Paper_thumbnail.png)(assets/Justin_Lee_Heart_Disease_Paper (2).pdf)]
 *Click the thumbnail to download the full paper.*
 
 ---
